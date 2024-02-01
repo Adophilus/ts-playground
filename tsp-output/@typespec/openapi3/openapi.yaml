@@ -1,0 +1,273 @@
+openapi: 3.0.0
+info:
+  title: Studybuddy
+  version: 0.0.1
+tags:
+  - name: Channels
+paths:
+  /channels:
+    post:
+      tags:
+        - Channels
+      operationId: Widgets_create
+      parameters: []
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Channel'
+        '400':
+          description: The server could not understand the request due to invalid syntax.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequestError'
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ChannelCreate'
+    get:
+      tags:
+        - Channels
+      operationId: Widgets_list
+      parameters: []
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - data
+                  - meta
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Channel'
+                  meta:
+                    type: object
+                    properties:
+                      page:
+                        type: integer
+                        format: int64
+                      perPage:
+                        type: integer
+                        format: int64
+                    required:
+                      - page
+                      - perPage
+        '400':
+          description: The server could not understand the request due to invalid syntax.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequestError'
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+    patch:
+      tags:
+        - Channels
+      operationId: Widgets_update
+      parameters: []
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Channel'
+        '400':
+          description: The server could not understand the request due to invalid syntax.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequestError'
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ChannelUpdate'
+  /channels/{id}:
+    get:
+      tags:
+        - Channels
+      operationId: Widgets_read
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - data
+                properties:
+                  data:
+                    $ref: '#/components/schemas/Channel'
+        '400':
+          description: The server could not understand the request due to invalid syntax.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequestError'
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+    delete:
+      tags:
+        - Channels
+      operationId: Widgets_delete
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - message
+                properties:
+                  message:
+                    type: string
+        '400':
+          description: The server could not understand the request due to invalid syntax.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequestError'
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+security:
+  - BearerAuth: []
+components:
+  schemas:
+    BadRequestError:
+      type: object
+      required:
+        - error
+      properties:
+        error:
+          type: array
+          items:
+            $ref: '#/components/schemas/ZodError'
+    Channel:
+      type: object
+      required:
+        - id
+        - name
+        - description
+        - subjects
+        - creatorId
+        - createdAt
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        description:
+          type: string
+        subjects:
+          type: array
+          items:
+            type: string
+        creatorId:
+          type: string
+        createdAt:
+          type: string
+    ChannelCreate:
+      type: object
+      required:
+        - name
+        - description
+        - subjects
+      properties:
+        name:
+          type: string
+        description:
+          type: string
+        subjects:
+          type: array
+          items:
+            type: string
+    ChannelUpdate:
+      type: object
+      properties:
+        name:
+          type: string
+        description:
+          type: string
+        subjects:
+          type: array
+          items:
+            type: string
+    GenericError:
+      type: object
+      required:
+        - message
+        - error
+      properties:
+        message:
+          type: string
+        error: {}
+    ZodError:
+      type: object
+      required:
+        - path
+        - message
+      properties:
+        path:
+          type: array
+          items:
+            type: string
+        message:
+          type: string
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+servers:
+  - url: https://studybuddy.com
+    description: Studybuddy server endpoint
+    variables: {}
